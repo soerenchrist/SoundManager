@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SoundManager.Infrastructure\SoundManager.Infrastructure.csproj" />
+      <ProjectReference Include="..\SoundManager.UseCases\SoundManager.UseCases.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints" Version="5.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Sounds" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundManager", "src\SoundManager\SoundManager.csproj", "{0524B439-399D-46E2-B6EA-3272361D281F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundManager.Core", "src\SoundManager.Core\SoundManager.Core.csproj", "{69CC740E-29C5-451C-B453-6BD585FCE506}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundManager.Infrastructure", "src\SoundManager.Infrastructure\SoundManager.Infrastructure.csproj", "{A41D76BD-7A1A-4796-AB4F-952E42157804}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundManager.UseCases", "src\SoundManager.UseCases\SoundManager.UseCases.csproj", "{1A3FDBBB-B285-48DF-81D0-EC0C3EB125C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0524B439-399D-46E2-B6EA-3272361D281F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0524B439-399D-46E2-B6EA-3272361D281F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0524B439-399D-46E2-B6EA-3272361D281F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0524B439-399D-46E2-B6EA-3272361D281F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69CC740E-29C5-451C-B453-6BD585FCE506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69CC740E-29C5-451C-B453-6BD585FCE506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69CC740E-29C5-451C-B453-6BD585FCE506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69CC740E-29C5-451C-B453-6BD585FCE506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A41D76BD-7A1A-4796-AB4F-952E42157804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A41D76BD-7A1A-4796-AB4F-952E42157804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A41D76BD-7A1A-4796-AB4F-952E42157804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A41D76BD-7A1A-4796-AB4F-952E42157804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A3FDBBB-B285-48DF-81D0-EC0C3EB125C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A3FDBBB-B285-48DF-81D0-EC0C3EB125C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A3FDBBB-B285-48DF-81D0-EC0C3EB125C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A3FDBBB-B285-48DF-81D0-EC0C3EB125C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
