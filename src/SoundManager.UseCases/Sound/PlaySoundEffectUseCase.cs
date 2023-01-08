@@ -16,14 +16,19 @@ public class PlaySoundEffectUseCase : IPlaySoundEffectUseCase
 
     public async Task<Result> PlaySoundEffectAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var soundEffect = await _context.SoundEffects.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
+        var soundEffect =
+            await _context.SoundEffects.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
         if (soundEffect == null)
         {
             return Result.NotFound($"Sound effect with id {id} not found");
         }
 
         await using var audioFile = new AudioFileReader(soundEffect.FilePath);
-        using var outputDevice = new WaveOutEvent();
+        SetOffset(audioFile, soundEffect.Offset);
+        using var outputDevice = new WaveOutEvent
+        {
+            Volume = (float)soundEffect.VolumePercent
+        };
         outputDevice.Init(audioFile);
         outputDevice.Play();
         while (outputDevice.PlaybackState == PlaybackState.Playing)
@@ -33,5 +38,15 @@ public class PlaySoundEffectUseCase : IPlaySoundEffectUseCase
         }
 
         return Result.Success();
+    }
+
+    private void SetOffset(AudioFileReader audioFile, int offsetMillis)
+    {
+        var totalDuration = audioFile.TotalTime.TotalMilliseconds;
+        var totalBytes = audioFile.Length;
+        var bytesPerMilliseconds = totalBytes / totalDuration;
+
+        var offsetBytes = bytesPerMilliseconds * offsetMillis;
+        audioFile.Position = (int)offsetBytes;
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SoundManager.Infrastructure.Database;
 using SoundManager.UseCases.Interfaces;
+using SoundManager.UseCases.Output;
 using SoundManager.UseCases.Sound;
 
 namespace SoundManager.UseCases;
@@ -25,5 +26,6 @@ public static class DependencyInjection
             provider.GetRequiredService<AppDbContext>()));
         services.AddScoped<IPlaySoundEffectUseCase, PlaySoundEffectUseCase>();
         services.AddScoped<IGetSoundEffectUseCase, GetSoundEffectUseCase>();
+        services.AddScoped<IGetOutputDevicesUseCase, GetOutputDevicesUseCase>();
     }
 }

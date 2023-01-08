@@ -676,3 +676,5 @@ src/SoundManager/SoundManager.db
 src/SoundManager/SoundManager.db-shm
 
 src/SoundManager/SoundManager.db-wal
+
+Sounds/
