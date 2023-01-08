@@ -669,3 +669,10 @@ fabric.properties
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,rider,dotnetcore,visualstudio
+src/SoundManager/Sounds/
+
+src/SoundManager/SoundManager.db
+
+src/SoundManager/SoundManager.db-shm
+
+src/SoundManager/SoundManager.db-wal
