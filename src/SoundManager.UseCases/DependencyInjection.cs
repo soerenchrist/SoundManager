@@ -24,5 +24,6 @@ public static class DependencyInjection
         services.AddScoped<IUploadSoundEffectUseCase>(provider => new UploadSoundEffectUseCase(soundDirectory,
             provider.GetRequiredService<AppDbContext>()));
         services.AddScoped<IPlaySoundEffectUseCase, PlaySoundEffectUseCase>();
+        services.AddScoped<IGetSoundEffectUseCase, GetSoundEffectUseCase>();
     }
 }

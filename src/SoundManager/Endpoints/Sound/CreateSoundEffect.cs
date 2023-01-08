@@ -15,7 +15,7 @@ public class CreateSoundEffect : Endpoint<CreateSoundEffectRequest, CreateSoundE
     public override void Configure()
     {
         AllowAnonymous();
-        Post("/sound");
+        Post("/sounds");
         AllowFileUploads();
     }
 

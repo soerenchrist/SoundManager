@@ -1,5 +1,4 @@
-﻿
-using FastEndpoints;
+﻿using FastEndpoints;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
@@ -12,10 +11,10 @@ public class PlaySoundEffect : Endpoint<PlaySoundEffectRequest, PlaySoundEffectR
     {
         _playSoundEffectUseCase = playSoundEffectUseCase;
     }
-    
+
     public override void Configure()
     {
-        Post("sound/{id}/play");
+        Post("sounds/{id}/play");
         AllowAnonymous();
     }
 
