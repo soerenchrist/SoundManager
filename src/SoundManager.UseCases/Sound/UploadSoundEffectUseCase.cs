@@ -39,7 +39,6 @@ public class UploadSoundEffectUseCase : IUploadSoundEffectUseCase
             Offset = offset,
             FilePath = filePath,
             TotalMilliseconds = durationMillis,
-            PlayDurationMilliseconds = durationMillis
         };
         await _appDbContext.AddAsync(soundEffect);
         await _appDbContext.SaveChangesAsync();

@@ -25,7 +25,7 @@ public class GetSoundEffectById : Endpoint<GetSoundEffectByIdRequest, GetSoundEf
         {
             var sound = result.Value;
             await SendAsync(new GetSoundEffectByIdResponse(sound.Id, sound.Name, sound.TotalMilliseconds, sound.Offset,
-                sound.PlayDurationMilliseconds, sound.VolumePercent), cancellation: ct);
+                sound.VolumePercent), cancellation: ct);
         }
         else
         {

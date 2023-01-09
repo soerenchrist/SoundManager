@@ -27,5 +27,6 @@ public static class DependencyInjection
         services.AddScoped<IPlaySoundEffectUseCase, PlaySoundEffectUseCase>();
         services.AddScoped<IGetSoundEffectUseCase, GetSoundEffectUseCase>();
         services.AddScoped<IGetOutputDevicesUseCase, GetOutputDevicesUseCase>();
+        services.AddScoped<IStopSoundEffectUseCase, StopSoundEffectUseCase>();
     }
 }

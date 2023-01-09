@@ -24,6 +24,5 @@ public class SoundEffect
 
     public int TotalMilliseconds { get; set; }
     public int Offset { get; set; }
-    public int PlayDurationMilliseconds { get; set; }
     public Guid Id { get; set; }
 }

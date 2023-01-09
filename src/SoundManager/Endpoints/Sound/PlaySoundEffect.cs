@@ -1,9 +1,10 @@
 ﻿using FastEndpoints;
+using SoundManager.Core.Models;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class PlaySoundEffect : Endpoint<PlaySoundEffectRequest, PlaySoundEffectResponse>
+public class PlaySoundEffect : Endpoint<PlaySoundEffectRequest, SoundPlayResult>
 {
     private readonly IPlaySoundEffectUseCase _playSoundEffectUseCase;
 
@@ -20,7 +21,14 @@ public class PlaySoundEffect : Endpoint<PlaySoundEffectRequest, PlaySoundEffectR
 
     public override async Task HandleAsync(PlaySoundEffectRequest req, CancellationToken ct)
     {
-        var result = await _playSoundEffectUseCase.PlaySoundEffectAsync(req.Id);
-        await SendAsync(new PlaySoundEffectResponse(result.IsSuccess), cancellation: ct);
+        var result = await _playSoundEffectUseCase.PlaySoundEffectAsync(req.Id, ct);
+        if (result.IsSuccess)
+        {
+            await SendAsync(result.Value, cancellation: ct);
+        }
+        else
+        {
+            await SendNotFoundAsync(ct);
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Ardalis.Result;
 using NAudio.Wave;
+using SoundManager.Core.Interfaces;
+using SoundManager.Core.Models;
 using SoundManager.Infrastructure.Database;
 using SoundManager.UseCases.Interfaces;
 
@@ -8,14 +10,27 @@ namespace SoundManager.UseCases.Sound;
 public class PlaySoundEffectUseCase : IPlaySoundEffectUseCase
 {
     private readonly AppDbContext _context;
+    private readonly ISoundPlayer _soundPlayer;
 
-    public PlaySoundEffectUseCase(AppDbContext context)
+    public PlaySoundEffectUseCase(AppDbContext context, ISoundPlayer soundPlayer)
     {
         _context = context;
+        _soundPlayer = soundPlayer;
     }
 
-    public async Task<Result> PlaySoundEffectAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<SoundPlayResult>> PlaySoundEffectAsync(Guid id,
+        CancellationToken cancellationToken = default)
     {
+        var soundEffect =
+            await _context.SoundEffects.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
+        if (soundEffect == null)
+        {
+            return Result.NotFound($"Sound effect with id {id} not found");
+        }
+
+        var result = _soundPlayer.PlaySound(soundEffect);
+        return result;
+        /*
         var soundEffect =
             await _context.SoundEffects.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
         if (soundEffect == null)
@@ -37,7 +52,9 @@ public class PlaySoundEffectUseCase : IPlaySoundEffectUseCase
             await Task.Delay(200, cancellationToken);
         }
 
+
         return Result.Success();
+        */
     }
 
     private void SetOffset(AudioFileReader audioFile, int offsetMillis)
