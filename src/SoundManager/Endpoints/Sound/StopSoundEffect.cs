@@ -20,7 +20,7 @@ public class StopSoundEffect : Endpoint<StopSoundEffectRequest, StopSoundEffectR
 
     public override async Task HandleAsync(StopSoundEffectRequest req, CancellationToken ct)
     {
-        var result = _stopSoundEffectUseCase.StopSoundEffect(req.Token);
+        var result = await _stopSoundEffectUseCase.StopSoundEffect(req.Token, req.FadeDurationMillis);
         await SendAsync(new StopSoundEffectResponse(result.IsSuccess), cancellation: ct);
     }
 }

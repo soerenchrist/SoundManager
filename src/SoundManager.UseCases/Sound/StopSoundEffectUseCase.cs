@@ -13,9 +13,9 @@ public class StopSoundEffectUseCase : IStopSoundEffectUseCase
         _soundPlayer = soundPlayer;
     }
 
-    public Result StopSoundEffect(Guid token)
+    public async Task<Result> StopSoundEffect(Guid token, int fadeDurationMillis = -1)
     {
-        var stopped = _soundPlayer.StopSound(token);
+        var stopped = await _soundPlayer.StopSound(token, fadeDurationMillis);
         return stopped ? Result.Success() : Result.Error("Token not valid anymore");
     }
 }

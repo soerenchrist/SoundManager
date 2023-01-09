@@ -5,5 +5,5 @@ namespace SoundManager.Core.Interfaces;
 public interface ISoundPlayer
 {
     SoundPlayResult PlaySound(SoundEffect soundEffect);
-    bool StopSound(Guid token);
+    Task<bool> StopSound(Guid token, int fadeDurationMillis = -1);
 }

@@ -4,5 +4,5 @@ namespace SoundManager.UseCases.Interfaces;
 
 public interface IStopSoundEffectUseCase
 {
-    Result StopSoundEffect(Guid token);
+    Task<Result> StopSoundEffect(Guid token, int fadeDurationMillis = -1);
 }
