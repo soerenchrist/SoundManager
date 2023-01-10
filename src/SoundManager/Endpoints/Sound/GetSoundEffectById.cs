@@ -1,9 +1,10 @@
 ﻿using FastEndpoints;
+using SoundManager.Dtos;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class GetSoundEffectById : Endpoint<GetSoundEffectByIdRequest, GetSoundEffectByIdResponse>
+public class GetSoundEffectById : Endpoint<GetSoundEffectByIdRequest, SoundEffectDto>
 {
     private readonly IGetSoundEffectUseCase _getSoundEffectUseCase;
 
@@ -24,8 +25,14 @@ public class GetSoundEffectById : Endpoint<GetSoundEffectByIdRequest, GetSoundEf
         if (result.IsSuccess)
         {
             var sound = result.Value;
-            await SendAsync(new GetSoundEffectByIdResponse(sound.Id, sound.Name, sound.TotalMilliseconds, sound.Offset,
-                sound.VolumePercent), cancellation: ct);
+            await SendAsync(new SoundEffectDto
+            {
+                VolumePercent = sound.VolumePercent,
+                Id = sound.Id,
+                Name = sound.Name,
+                Offset = sound.Offset,
+                TotalMilliseconds = sound.TotalMilliseconds
+            }, cancellation: ct);
         }
         else
         {

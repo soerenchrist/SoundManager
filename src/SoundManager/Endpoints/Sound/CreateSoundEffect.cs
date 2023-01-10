@@ -1,11 +1,12 @@
 ﻿using FastEndpoints;
 using SoundManager.Core.Models;
+using SoundManager.Dtos;
 using SoundManager.UseCases.Interfaces;
 using SoundManager.Util;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class CreateSoundEffect : Endpoint<CreateSoundEffectRequest, SoundEffect>
+public class CreateSoundEffect : Endpoint<CreateSoundEffectRequest, SoundEffectDto>
 {
     private readonly IUploadSoundEffectUseCase _uploadSoundEffectUseCase;
 
@@ -27,7 +28,15 @@ public class CreateSoundEffect : Endpoint<CreateSoundEffectRequest, SoundEffect>
             req.VolumePercent, req.Offset, ct);
         if (result.IsSuccess)
         {
-            await SendAsync(result, cancellation: ct);
+            var sound = result.Value;
+            await SendAsync(new SoundEffectDto
+            {
+                TotalMilliseconds = sound.TotalMilliseconds,
+                Id = sound.Id,
+                Name = sound.Name,
+                VolumePercent = sound.VolumePercent,
+                Offset = sound.Offset
+            }, cancellation: ct);
         }
         else
         {

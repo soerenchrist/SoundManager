@@ -17,7 +17,8 @@ public class GetGroupUseCase : IGetGroupUseCase, IUseCase
 
     public async Task<Result<Group>> GetGroupAsync(Guid groupId, CancellationToken cancellationToken = default)
     {
-        var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == groupId, cancellationToken);
+        var group = await _context.Groups.Include(x => x.SoundEffects)
+            .FirstOrDefaultAsync(g => g.Id == groupId, cancellationToken);
         if (group == null) return Result<Group>.NotFound();
         return group;
     }
