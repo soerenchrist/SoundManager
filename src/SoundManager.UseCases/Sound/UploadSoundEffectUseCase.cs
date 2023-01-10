@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Ardalis.Result;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NAudio.Wave;
 using SoundManager.Core.Models;
 using SoundManager.Infrastructure.Database;
@@ -21,31 +23,40 @@ public class UploadSoundEffectUseCase : IUploadSoundEffectUseCase, IUseCase
         _appDbContext = appDbContext;
     }
 
-    public async Task<SoundEffect> AddSoundEffectAsync(Stream file, string name, double volumePercent, int offset)
+    public async Task<Result<SoundEffect>> AddSoundEffectAsync(Stream file, string name, double volumePercent, int offset, CancellationToken cancellationToken = default)
     {
         var guid = Guid.NewGuid();
         var filePath = Path.Combine(_directoryPath, $"{guid}.mp3");
 
-        await using (var fileStream = File.Create(filePath))
+        var existing = await _appDbContext.SoundEffects.FirstOrDefaultAsync(x => x.Name == name, cancellationToken: cancellationToken);
+        if (existing != null) return Result.Error("Sound effect with this name already exists");
+        try
         {
-            await file.CopyToAsync(fileStream);
+            await using (var fileStream = File.Create(filePath))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            await using var fileReader = new Mp3FileReader(filePath);
+            var duration = fileReader.TotalTime;
+            var durationMillis = (int)duration.TotalMilliseconds;
+
+            var soundEffect = new SoundEffect
+            {
+                Id = guid,
+                Name = name,
+                VolumePercent = volumePercent,
+                Offset = offset,
+                FilePath = filePath,
+                TotalMilliseconds = durationMillis,
+            };
+            await _appDbContext.AddAsync(soundEffect, cancellationToken);
+            await _appDbContext.SaveChangesAsync(cancellationToken);
+            return soundEffect;
         }
-
-        await using var fileReader = new Mp3FileReader(filePath);
-        var duration = fileReader.TotalTime;
-        var durationMillis = (int)duration.TotalMilliseconds;
-
-        var soundEffect = new SoundEffect
+        catch (Exception e)
         {
-            Id = guid,
-            Name = name,
-            VolumePercent = volumePercent,
-            Offset = offset,
-            FilePath = filePath,
-            TotalMilliseconds = durationMillis,
-        };
-        await _appDbContext.AddAsync(soundEffect);
-        await _appDbContext.SaveChangesAsync();
-        return soundEffect;
+            return Result.Error(e.Message);
+        }
     }
 }
