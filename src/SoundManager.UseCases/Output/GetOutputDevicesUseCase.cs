@@ -4,7 +4,7 @@ using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.UseCases.Output;
 
-public class GetOutputDevicesUseCase : IGetOutputDevicesUseCase
+public class GetOutputDevicesUseCase : IGetOutputDevicesUseCase, IUseCase
 {
     public List<OutputDevice> GetOutputDevices()
     {

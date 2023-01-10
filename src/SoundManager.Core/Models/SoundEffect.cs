@@ -5,8 +5,7 @@ public class SoundEffect
     private double _volumePercent = 1f;
     public required string FilePath { get; set; }
     public required string Name { get; set; }
-    public Guid? GroupId { get; set; }
-    public Group? Group { get; set; }
+    public List<Group> Groups { get; set; } = new();
     public double VolumePercent
     {
         get => _volumePercent;

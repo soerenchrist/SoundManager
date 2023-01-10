@@ -5,7 +5,7 @@ using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.UseCases.Sound;
 
-public class GetSoundEffectUseCase : IGetSoundEffectUseCase
+public class GetSoundEffectUseCase : IGetSoundEffectUseCase, IUseCase
 {
     private readonly AppDbContext _context;
 

@@ -7,7 +7,7 @@ using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.UseCases.Sound;
 
-public class PlaySoundEffectUseCase : IPlaySoundEffectUseCase
+public class PlaySoundEffectUseCase : IPlaySoundEffectUseCase, IUseCase
 {
     private readonly AppDbContext _context;
     private readonly ISoundPlayer _soundPlayer;

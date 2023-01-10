@@ -1,19 +1,23 @@
-﻿using NAudio.Wave;
+﻿using Microsoft.Extensions.Configuration;
+using NAudio.Wave;
 using SoundManager.Core.Models;
 using SoundManager.Infrastructure.Database;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.UseCases.Sound;
 
-public class UploadSoundEffectUseCase : IUploadSoundEffectUseCase
+public class UploadSoundEffectUseCase : IUploadSoundEffectUseCase, IUseCase
 {
-    private readonly string _directoryPath;
     private readonly AppDbContext _appDbContext;
+    private readonly string _directoryPath;
 
-    public UploadSoundEffectUseCase(string directoryPath,
+    public UploadSoundEffectUseCase(IConfiguration configuration,
         AppDbContext appDbContext)
     {
-        _directoryPath = directoryPath;
+        var path = configuration["Sounds:Directory"];
+        if (path == null) throw new ArgumentException("Path to sound files is not set in configuration");
+        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+        _directoryPath = path;
         _appDbContext = appDbContext;
     }
 

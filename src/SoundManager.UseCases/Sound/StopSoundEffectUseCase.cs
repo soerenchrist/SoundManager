@@ -4,7 +4,7 @@ using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.UseCases.Sound;
 
-public class StopSoundEffectUseCase : IStopSoundEffectUseCase
+public class StopSoundEffectUseCase : IStopSoundEffectUseCase, IUseCase
 {
     private readonly ISoundPlayer _soundPlayer;
 

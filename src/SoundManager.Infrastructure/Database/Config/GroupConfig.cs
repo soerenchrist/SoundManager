@@ -11,7 +11,6 @@ public class GroupConfig : IEntityTypeConfiguration<Group>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name).IsRequired();
         builder.HasMany(x => x.SoundEffects)
-            .WithOne(x => x.Group)
-            .HasForeignKey(x => x.GroupId);
+            .WithMany(x => x.Groups);
     }
 }
