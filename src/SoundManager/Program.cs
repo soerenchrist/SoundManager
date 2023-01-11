@@ -4,30 +4,39 @@ using SoundManager.Infrastructure;
 using SoundManager.Infrastructure.Database;
 using SoundManager.UseCases;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace SoundManager;
 
-builder.Services.AddControllers();
-builder.Services.AddInfrastructure();
-builder.Services.AddUseCases(builder.Configuration);
-builder.Services.AddCoreDependencies();
-builder.Services.AddFastEndpoints();
-
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+public class Program
 {
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        var connectionString = builder.Configuration.GetConnectionString("Sqlite");
+        if (connectionString == null) throw new Exception("Connection string not found");
+
+        builder.Services.AddControllers();
+        builder.Services.AddInfrastructure(connectionString);
+        builder.Services.AddUseCases(builder.Configuration);
+        builder.Services.AddCoreDependencies();
+        builder.Services.AddFastEndpoints();
+
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+        }
+
+        app.UseHttpsRedirection();
+        app.MapGet("/health-check", () => Results.Ok());
+
+        app.UseFastEndpoints(options => { options.Endpoints.RoutePrefix = "api/v1"; });
+
+        using var scope = app.Services.CreateScope();
+        using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        context.Database.EnsureCreated();
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseFastEndpoints(options =>
-{
-    options.Endpoints.RoutePrefix = "api/v1";
-});
-
-using var scope = app.Services.CreateScope();
-using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-context.Database.EnsureCreated();
-
-app.Run();

@@ -6,11 +6,11 @@ namespace SoundManager.Infrastructure;
 
 public static class DependencyInjection
 {
-   public static void AddInfrastructure(this IServiceCollection services)
+   public static void AddInfrastructure(this IServiceCollection services, string connectionString)
    {
       services.AddDbContext<AppDbContext>(options =>
       {
-         options.UseSqlite("Data Source=SoundManager.db");
+         options.UseSqlite(connectionString);
       });
    } 
 }

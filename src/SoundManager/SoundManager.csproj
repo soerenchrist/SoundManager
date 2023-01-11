@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="..\SoundManager.Infrastructure\SoundManager.Infrastructure.csproj" />
       <ProjectReference Include="..\SoundManager.UseCases\SoundManager.UseCases.csproj" />
