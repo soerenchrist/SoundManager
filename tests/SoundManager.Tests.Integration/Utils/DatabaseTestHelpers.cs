@@ -59,4 +59,16 @@ public class DatabaseTestHelpers : IDisposable
         _context.SaveChanges();
         return soundEffects;
     }
+
+    public List<Group> CreateGroups(int amount)
+    {
+        var faker = new Faker<Group>()
+            .RuleFor(x => x.Id, Guid.NewGuid)
+            .RuleFor(x => x.Name, f => f.Lorem.Word());
+        var groups = faker.Generate(amount);
+        
+        _context.Groups.AddRange(groups);
+        _context.SaveChanges();
+        return groups;
+    }
 }
