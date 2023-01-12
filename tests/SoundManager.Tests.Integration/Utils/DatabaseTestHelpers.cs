@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Bogus;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SoundManager.Core.Models;
@@ -41,5 +42,21 @@ public class DatabaseTestHelpers : IDisposable
     public void Dispose()
     {
         ClearDatabase();
+    }
+
+    public List<SoundEffect> CreateSoundEffects(int amount)
+    {
+        var faker = new Faker<SoundEffect>()
+            .RuleFor(x => x.Id, f => Guid.NewGuid())
+            .RuleFor(x => x.TotalMilliseconds, f => f.Random.Int(0, 1000))
+            .RuleFor(x => x.VolumePercent, f => f.Random.Double(0, 1))
+            .RuleFor(x => x.Offset, f => f.Random.Int(0, 1000))
+            .RuleFor(x => x.Name, f => f.Lorem.Word())
+            .RuleFor(x => x.FilePath, f => f.System.FilePath());
+
+        var soundEffects = faker.Generate(amount);
+        _context.SoundEffects.AddRange(soundEffects);
+        _context.SaveChanges();
+        return soundEffects;
     }
 }
