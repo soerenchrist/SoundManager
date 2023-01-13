@@ -1,10 +1,10 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
 using Group = SoundManager.Core.Models.Group;
 
 namespace SoundManager.Endpoints.Groups;
 
-public class GetGroups : EndpointWithoutRequest<List<Group>>
+public class GetGroups : EndpointBaseAsync.WithoutRequest.WithResult<List<Group>>
 {
     private readonly IGetGroupsUseCase _getGroupsUseCase;
 
@@ -13,15 +13,10 @@ public class GetGroups : EndpointWithoutRequest<List<Group>>
         _getGroupsUseCase = getGroupsUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Get("/groups");
-    }
-
-    public override async Task HandleAsync(CancellationToken ct)
+    [HttpGet("api/v1/groups")]
+    public override async Task<List<Group>> HandleAsync(CancellationToken ct = default)
     {
         var groups = await _getGroupsUseCase.GetGroupsAsync(ct);
-        await SendAsync(groups, cancellation: ct);
+        return groups;
     }
 }

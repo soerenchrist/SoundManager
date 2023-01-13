@@ -1,10 +1,10 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.Dtos;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class GetSoundEffectById : Endpoint<GetSoundEffectByIdRequest, SoundEffectDto>
+public class GetSoundEffectById : EndpointBaseAsync.WithRequest<GetSoundEffectByIdRequest>.WithActionResult<SoundEffectDto>
 {
     private readonly IGetSoundEffectUseCase _getSoundEffectUseCase;
 
@@ -12,31 +12,24 @@ public class GetSoundEffectById : Endpoint<GetSoundEffectByIdRequest, SoundEffec
     {
         _getSoundEffectUseCase = getSoundEffectUseCase;
     }
-
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Get("sounds/{id}");
-    }
-
-    public override async Task HandleAsync(GetSoundEffectByIdRequest req, CancellationToken ct)
+    
+    [HttpGet("api/v1/sounds/{id}")]
+    public override async Task<ActionResult<SoundEffectDto>> HandleAsync([FromRoute] GetSoundEffectByIdRequest req, CancellationToken ct = default)
     {
         var result = await _getSoundEffectUseCase.GetSoundEffectAsync(req.Id);
         if (result.IsSuccess)
         {
             var sound = result.Value;
-            await SendAsync(new SoundEffectDto
+            return new SoundEffectDto
             {
                 VolumePercent = sound.VolumePercent,
                 Id = sound.Id,
                 Name = sound.Name,
                 Offset = sound.Offset,
                 TotalMilliseconds = sound.TotalMilliseconds
-            }, cancellation: ct);
+            };
         }
-        else
-        {
-            await SendNotFoundAsync(cancellation: ct);
-        }
+
+        return NotFound();
     }
 }

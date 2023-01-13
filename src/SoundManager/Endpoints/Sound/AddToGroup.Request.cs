@@ -1,4 +1,5 @@
-﻿namespace SoundManager.Endpoints.Sound;
+﻿
+namespace SoundManager.Endpoints.Sound;
 
 public class AddToGroupRequest
 {

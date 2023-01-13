@@ -1,11 +1,10 @@
-﻿using FastEndpoints;
-using SoundManager.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.Dtos;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class GetSoundEffects : Endpoint<GetSoundEffectsRequest, List<SoundEffectDto>>
+public class GetSoundEffects : EndpointBaseAsync.WithRequest<GetSoundEffectsRequest>.WithResult<List<SoundEffectDto>>
 {
     private readonly IGetSoundEffectsUseCase _getSoundEffectsUseCase;
 
@@ -14,23 +13,19 @@ public class GetSoundEffects : Endpoint<GetSoundEffectsRequest, List<SoundEffect
         _getSoundEffectsUseCase = getSoundEffectsUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Get("sounds");
-    }
-
-    public override async Task HandleAsync(GetSoundEffectsRequest req, CancellationToken ct)
+    [HttpGet("api/v1/sounds")]
+    public override async Task<List<SoundEffectDto>> HandleAsync([FromQuery]GetSoundEffectsRequest req, CancellationToken ct = default)
     {
         var soundEffects =
             await _getSoundEffectsUseCase.GetSoundEffectsAsync(req.GroupId, ct);
-        await SendAsync(soundEffects.Select(x => new SoundEffectDto
+
+        return soundEffects.Select(x => new SoundEffectDto
         {
             Name = x.Name,
             Id = x.Id,
             Offset = x.Offset,
             TotalMilliseconds = x.TotalMilliseconds,
             VolumePercent = x.VolumePercent
-        }).ToList(), cancellation: ct);
+        }).ToList();
     }
 }

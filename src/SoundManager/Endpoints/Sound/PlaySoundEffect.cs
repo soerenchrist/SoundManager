@@ -1,10 +1,11 @@
-﻿using FastEndpoints;
-using SoundManager.Core.Models;
+﻿using SoundManager.Core.Models;
 using SoundManager.UseCases.Interfaces;
+using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class PlaySoundEffect : Endpoint<PlaySoundEffectRequest, SoundPlayResult>
+public class PlaySoundEffect : EndpointBaseAsync.WithRequest<PlaySoundEffectRequest>.WithResult<SoundPlayResult>
 {
     private readonly IPlaySoundEffectUseCase _playSoundEffectUseCase;
 
@@ -13,22 +14,10 @@ public class PlaySoundEffect : Endpoint<PlaySoundEffectRequest, SoundPlayResult>
         _playSoundEffectUseCase = playSoundEffectUseCase;
     }
 
-    public override void Configure()
-    {
-        Post("sounds/{id}/play");
-        AllowAnonymous();
-    }
-
-    public override async Task HandleAsync(PlaySoundEffectRequest req, CancellationToken ct)
+    [HttpPost("api/v1/sounds/{id:guid}/play")]
+    public override async Task<SoundPlayResult> HandleAsync(PlaySoundEffectRequest req, CancellationToken ct = default)
     {
         var result = await _playSoundEffectUseCase.PlaySoundEffectAsync(req.Id, ct);
-        if (result.IsSuccess)
-        {
-            await SendAsync(result.Value, cancellation: ct);
-        }
-        else
-        {
-            await SendNotFoundAsync(ct);
-        }
+        return result;
     }
 }

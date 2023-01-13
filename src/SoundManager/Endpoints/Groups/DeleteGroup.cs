@@ -1,9 +1,9 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Groups;
 
-public class DeleteGroup : Endpoint<DeleteGroupRequest>
+public class DeleteGroup : EndpointBaseAsync.WithRequest<Guid>.WithActionResult
 {
     private readonly IDeleteGroupUseCase _deleteGroupUseCase;
 
@@ -12,22 +12,15 @@ public class DeleteGroup : Endpoint<DeleteGroupRequest>
         _deleteGroupUseCase = deleteGroupUseCase;
     }
 
-    public override void Configure()
+    [HttpDelete("api/v1/groups/{groupId:guid}")]
+    public override async Task<ActionResult> HandleAsync([FromRoute]Guid groupId, CancellationToken ct = default)
     {
-        Delete("/groups/{groupId}");
-        AllowAnonymous();
-    }
-
-    public override async Task HandleAsync(DeleteGroupRequest req, CancellationToken ct)
-    {
-        var result = await _deleteGroupUseCase.DeleteGroupAsync(req.GroupId, ct);
+        var result = await _deleteGroupUseCase.DeleteGroupAsync(groupId, ct);
         if (result.IsSuccess)
         {
-            await SendNoContentAsync(ct);
+            return NoContent();
         }
-        else
-        {
-            await SendNotFoundAsync(ct);
-        }
+
+        return NotFound();
     }
 }

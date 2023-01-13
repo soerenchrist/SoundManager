@@ -1,4 +1,3 @@
-using FastEndpoints;
 using SoundManager.Core;
 using SoundManager.Infrastructure;
 using SoundManager.Infrastructure.Database;
@@ -19,7 +18,6 @@ public class Program
         builder.Services.AddInfrastructure(connectionString);
         builder.Services.AddUseCases(builder.Configuration);
         builder.Services.AddCoreDependencies();
-        builder.Services.AddFastEndpoints();
 
 
         var app = builder.Build();
@@ -31,7 +29,7 @@ public class Program
         app.UseHttpsRedirection();
         app.MapGet("/health-check", () => Results.Ok());
 
-        app.UseFastEndpoints(options => { options.Endpoints.RoutePrefix = "api/v1"; });
+        app.MapControllers();
 
         using var scope = app.Services.CreateScope();
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

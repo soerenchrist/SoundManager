@@ -1,9 +1,10 @@
-﻿using FastEndpoints;
+﻿using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class StopSoundEffect : Endpoint<StopSoundEffectRequest, StopSoundEffectResponse>
+public class StopSoundEffect : EndpointBaseAsync.WithRequest<StopSoundEffectRequest>.WithResult<StopSoundEffectResponse>
 {
     private readonly IStopSoundEffectUseCase _stopSoundEffectUseCase;
 
@@ -12,15 +13,10 @@ public class StopSoundEffect : Endpoint<StopSoundEffectRequest, StopSoundEffectR
         _stopSoundEffectUseCase = stopSoundEffectUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Post("/sounds/{token}/stop");
-    }
-
-    public override async Task HandleAsync(StopSoundEffectRequest req, CancellationToken ct)
+    [HttpPost("api/v1/sounds/{token:guid}/stop")]
+    public override async Task<StopSoundEffectResponse> HandleAsync(StopSoundEffectRequest req, CancellationToken ct = default)
     {
         var result = await _stopSoundEffectUseCase.StopSoundEffectAsync(req.Token, req.FadeDurationMillis);
-        await SendAsync(new StopSoundEffectResponse(result.IsSuccess), cancellation: ct);
+        return new StopSoundEffectResponse(result.IsSuccess);
     }
 }

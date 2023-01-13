@@ -1,11 +1,10 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
-using SoundManager.Util;
 using Group = SoundManager.Core.Models.Group;
 
 namespace SoundManager.Endpoints.Groups;
 
-public class GetGroup : Endpoint<GetGroupRequest, Group>
+public class GetGroup : EndpointBaseAsync.WithRequest<Guid>.WithActionResult<Group>
 {
     private readonly IGetGroupUseCase _getGroupUseCase;
 
@@ -14,22 +13,15 @@ public class GetGroup : Endpoint<GetGroupRequest, Group>
         _getGroupUseCase = getGroupUseCase;
     }
 
-    public override void Configure()
+    [HttpGet("api/v1/groups/{groupId:guid}")]
+    public override async Task<ActionResult<Group>> HandleAsync([FromRoute]Guid groupId, CancellationToken cancellationToken = default)
     {
-        AllowAnonymous();
-        Get("/groups/{groupId}");
-    }
-
-    public override async Task HandleAsync(GetGroupRequest request, CancellationToken cancellationToken)
-    {
-        var result = await _getGroupUseCase.GetGroupAsync(request.GroupId, cancellationToken);
+        var result = await _getGroupUseCase.GetGroupAsync(groupId, cancellationToken);
         if (result.IsSuccess)
         {
-            await SendAsync(result.Value, cancellation: cancellationToken);
+            return result.Value;
         }
-        else
-        {
-            await SendStringAsync(result.ErrorMessages(), 404, cancellation: cancellationToken);
-        }
+
+        return NotFound();
     }
 }

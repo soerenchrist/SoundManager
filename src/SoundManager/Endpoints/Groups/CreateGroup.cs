@@ -1,11 +1,10 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
-using SoundManager.Util;
 using Group = SoundManager.Core.Models.Group;
 
 namespace SoundManager.Endpoints.Groups;
 
-public class CreateGroup : Endpoint<CreateGroupRequest, Group>
+public class CreateGroup : EndpointBaseAsync.WithRequest<CreateGroupRequest>.WithActionResult<Group>
 {
     private readonly ICreateGroupUseCase _createGroupUseCase;
 
@@ -14,22 +13,15 @@ public class CreateGroup : Endpoint<CreateGroupRequest, Group>
         _createGroupUseCase = createGroupUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Post("/groups");
-    }
-
-    public override async Task HandleAsync(CreateGroupRequest req, CancellationToken ct)
+    [HttpPost("api/v1/groups")]
+    public override async Task<ActionResult<Group>> HandleAsync([FromBody]CreateGroupRequest req, CancellationToken ct = default)
     {
         var result = await _createGroupUseCase.CreateGroupAsync(req.Name, ct);
         if (result.IsSuccess)
         {
-            await SendAsync(result.Value, cancellation: ct);
+            return result.Value;
         }
-        else
-        {
-            await SendStringAsync(result.ErrorMessages(), 400, cancellation: ct);
-        }
+
+        return BadRequest(result.Errors);
     }
 }

@@ -1,9 +1,9 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class DeleteSoundEffect : Endpoint<DeleteSoundEffectRequest>
+public class DeleteSoundEffect : EndpointBaseAsync.WithRequest<DeleteSoundEffectRequest>.WithActionResult
 {
     private readonly IDeleteSoundEffectUseCase _deleteSoundEffectUseCase;
 
@@ -12,22 +12,15 @@ public class DeleteSoundEffect : Endpoint<DeleteSoundEffectRequest>
         _deleteSoundEffectUseCase = deleteSoundEffectUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Delete("/sounds/{id}");
-    }
-
-    public override async Task HandleAsync(DeleteSoundEffectRequest request, CancellationToken cancellationToken)
+    [HttpDelete("/api/v1/sounds/{id:guid}")]
+    public override async Task<ActionResult> HandleAsync([FromRoute]DeleteSoundEffectRequest request, CancellationToken cancellationToken = default)
     {
         var result = await _deleteSoundEffectUseCase.DeleteSoundEffectAsync(request.Id, cancellationToken);
         if (result.IsSuccess)
         {
-            await SendNoContentAsync(cancellationToken);
+            return NoContent();
         }
-        else
-        {
-            await SendNotFoundAsync(cancellationToken);
-        }
+
+        return NotFound();
     }
 }

@@ -1,10 +1,10 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
 using Group = SoundManager.Core.Models.Group;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class AddToGroup : Endpoint<AddToGroupRequest, AddToGroupResponse>
+public class AddToGroup : EndpointBaseAsync.WithRequest<AddToGroupRequest>.WithResult<AddToGroupResponse>
 {
     private readonly IAddToGroupUseCase _addToGroupUseCase;
 
@@ -13,15 +13,10 @@ public class AddToGroup : Endpoint<AddToGroupRequest, AddToGroupResponse>
         _addToGroupUseCase = addToGroupUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Put("/groups/add");
-    }
-
-    public override async Task HandleAsync(AddToGroupRequest req, CancellationToken ct)
+    [HttpPut("api/v1/groups/add")]
+    public override async Task<AddToGroupResponse> HandleAsync(AddToGroupRequest req, CancellationToken ct = default)
     {
         var result = await _addToGroupUseCase.AddSoundEffectToGroupAsync(req.SoundEffectId, req.GroupId, ct);
-        await SendAsync(new AddToGroupResponse(result.IsSuccess), cancellation: ct);
+        return new AddToGroupResponse(result.IsSuccess);
     }
 }

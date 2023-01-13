@@ -1,9 +1,9 @@
-﻿using FastEndpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.UseCases.Interfaces;
 
 namespace SoundManager.Endpoints.Output;
 
-public class GetOutputDevices : EndpointWithoutRequest<GetOutputDevicesResponse>
+public class GetOutputDevices : EndpointBaseAsync.WithoutRequest.WithResult<GetOutputDevicesResponse>
 {
     private readonly IGetOutputDevicesUseCase _getOutputDevicesUseCase;
 
@@ -12,15 +12,10 @@ public class GetOutputDevices : EndpointWithoutRequest<GetOutputDevicesResponse>
         _getOutputDevicesUseCase = getOutputDevicesUseCase;
     }
 
-    public override void Configure()
-    {
-        Get("devices");
-        AllowAnonymous();
-    }
-
-    public override async Task HandleAsync(CancellationToken ct)
+    [HttpGet("api/v1/devices")]
+    public override Task<GetOutputDevicesResponse> HandleAsync(CancellationToken ct = default)
     {
         var devices = _getOutputDevicesUseCase.GetOutputDevices();
-        await SendAsync(new GetOutputDevicesResponse(devices), cancellation: ct);
+        return Task.FromResult(new GetOutputDevicesResponse(devices));
     }
 }

@@ -1,12 +1,11 @@
-﻿using FastEndpoints;
-using SoundManager.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using SoundManager.Dtos;
 using SoundManager.UseCases.Interfaces;
 using SoundManager.Util;
 
 namespace SoundManager.Endpoints.Sound;
 
-public class CreateSoundEffect : Endpoint<CreateSoundEffectRequest, SoundEffectDto>
+public class CreateSoundEffect : EndpointBaseAsync.WithRequest<CreateSoundEffectRequest>.WithActionResult<SoundEffectDto>
 {
     private readonly IUploadSoundEffectUseCase _uploadSoundEffectUseCase;
 
@@ -15,32 +14,25 @@ public class CreateSoundEffect : Endpoint<CreateSoundEffectRequest, SoundEffectD
         _uploadSoundEffectUseCase = uploadSoundEffectUseCase;
     }
 
-    public override void Configure()
-    {
-        AllowAnonymous();
-        Post("/sounds");
-        AllowFileUploads();
-    }
 
-    public override async Task HandleAsync(CreateSoundEffectRequest req, CancellationToken ct)
+    [HttpPost("api/v1/sounds")]
+    public override async Task<ActionResult<SoundEffectDto>> HandleAsync([FromForm]CreateSoundEffectRequest req, CancellationToken ct = default)
     {
         var result = await _uploadSoundEffectUseCase.AddSoundEffectAsync(req.File.OpenReadStream(), req.Name,
             req.VolumePercent, req.Offset, ct);
         if (result.IsSuccess)
         {
             var sound = result.Value;
-            await SendAsync(new SoundEffectDto
+            return new SoundEffectDto
             {
                 TotalMilliseconds = sound.TotalMilliseconds,
                 Id = sound.Id,
                 Name = sound.Name,
                 VolumePercent = sound.VolumePercent,
                 Offset = sound.Offset
-            }, cancellation: ct);
+            };
         }
-        else
-        {
-            await SendStringAsync(result.ErrorMessages(), cancellation: ct);
-        }
+
+        return BadRequest(result.ErrorMessages()); 
     }
 }

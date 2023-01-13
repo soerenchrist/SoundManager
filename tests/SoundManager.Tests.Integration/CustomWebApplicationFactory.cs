@@ -15,6 +15,7 @@ public class CustomWebApplicationFactory<TProgram>
 
     private static IConfiguration BuildTestConfiguration()
     {
+
         var config = new Dictionary<string, string?>
         {
             { "ConnectionStrings:Sqlite", "Data Source=Test.db" },
